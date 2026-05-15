@@ -1,0 +1,361 @@
+/*
+ * LeetCode AI Analyzer — Overlay Styles
+ * Injected into shadow DOM to avoid conflicts with LeetCode
+ */
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&display=swap');
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+/* ── Container ── */
+
+.lca-overlay {
+  position: fixed;
+  z-index: 2147483646;
+  width: 340px;
+  font-family: 'Inter', system-ui, sans-serif;
+  font-size: 13px;
+  color: #e2e8f0;
+  background: #000000 !important;
+  opacity: 1 !important;
+  border: 1px solid rgba(255,161,22,0.3);
+  border-radius: 8px;
+  box-shadow: 0 8px 40px rgba(0,0,0,0.55), 0 0 0 1px rgba(255,255,255,0.04);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  animation: lca-in 0.25s ease-out;
+  user-select: none;
+}
+
+.lca-overlay.dragging {
+  cursor: grabbing;
+}
+
+/* ── Header ── */
+
+.lca-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 14px;
+  background: #1a1a1a;
+  border-bottom: 1px solid rgba(255,255,255,0.1);
+  cursor: grab;
+}
+
+.lca-header:active { cursor: grabbing; }
+
+.lca-header-left {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.lca-logo {
+  width: 26px;
+  height: 26px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 4px;
+  background: rgba(255,161,22,0.15);
+}
+
+.lca-title {
+  font-size: 13px;
+  font-weight: 700;
+  color: #ffa116;
+}
+
+.lca-btns {
+  display: flex;
+  gap: 4px;
+}
+
+.lca-btn {
+  width: 26px;
+  height: 26px;
+  border: none;
+  border-radius: 6px;
+  background: transparent;
+  color: #64748b;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.15s;
+}
+
+.lca-btn:hover { background: rgba(255,255,255,0.06); color: #e2e8f0; }
+.lca-btn-close:hover { background: rgba(239,68,68,0.15); color: #ef4444; }
+
+/* ── Body ── */
+
+.lca-body {
+  padding: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  max-height: 420px;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255,255,255,0.08) transparent;
+}
+
+/* ── Complexity Cards ── */
+
+.lca-cards {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+
+.lca-card {
+  background: #222222;
+  border: 1px solid rgba(255,255,255,0.05);
+  border-radius: 6px;
+  padding: 12px;
+  transition: all 0.2s;
+}
+
+.lca-card:hover {
+  border-color: rgba(255,255,255,0.1);
+  transform: translateY(-1px);
+}
+
+.lca-card-label {
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: #64748b;
+  margin-bottom: 6px;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.lca-card-value {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 15px;
+  font-weight: 700;
+  min-height: 22px;
+}
+
+.lca-card-value.green { color: #ffa116; }
+.lca-card-value.purple { color: #ffa116; }
+.lca-card-value.muted { color: #475569; }
+
+/* ── Divider ── */
+
+.lca-divider {
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.06), transparent);
+}
+
+/* ── Hints ── */
+
+.lca-section-label {
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: #64748b;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 4px;
+}
+
+.lca-section-label svg { color: #ffa116; }
+
+.lca-hints {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.lca-hint {
+  background: #222222;
+  border: 1px solid rgba(255,255,255,0.05);
+  border-radius: 6px;
+  padding: 10px 12px;
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  animation: lca-slide 0.25s ease-out both;
+}
+
+.lca-hint:nth-child(1) { animation-delay: 0s; }
+.lca-hint:nth-child(2) { animation-delay: 0.06s; }
+.lca-hint:nth-child(3) { animation-delay: 0.12s; }
+
+.lca-hint:hover {
+  border-color: rgba(255,161,22,0.3);
+}
+
+.lca-hint-num {
+  min-width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: rgba(251,191,36,0.12);
+  color: #fbbf24;
+  font-size: 10px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+
+.lca-hint-text {
+  font-size: 13px;
+  line-height: 1.5;
+  color: #eff2f6;
+}
+
+.lca-hint-text strong {
+  color: #ffa116;
+}
+
+.lca-empty {
+  color: #475569;
+  font-size: 12px;
+  text-align: center;
+  padding: 16px 0;
+}
+
+/* ── Status ── */
+
+.lca-status {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding-top: 8px;
+  border-top: 1px solid rgba(255,255,255,0.04);
+}
+
+.lca-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.lca-dot.green { background: #ffa116; }
+.lca-dot.yellow { background: #eab308; animation: lca-pulse 1.2s infinite; }
+.lca-dot.red { background: #ef4444; }
+.lca-dot.gray { background: #475569; }
+
+.lca-status-text {
+  font-size: 11px;
+  color: #64748b;
+}
+
+.lca-lang {
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  padding: 2px 6px;
+  border-radius: 4px;
+  background: rgba(255,161,22,0.15);
+  color: #ffa116;
+  margin-left: auto;
+}
+
+/* ── Shimmer ── */
+
+.lca-shimmer {
+  height: 20px;
+  width: 70%;
+  border-radius: 4px;
+  background: linear-gradient(90deg, #333 25%, #444 50%, #333 75%);
+  background-size: 200% 100%;
+  animation: lca-shimmer 1.4s ease-in-out infinite;
+}
+
+.lca-shimmer-hint {
+  height: 38px;
+  width: 100%;
+  border-radius: 6px;
+  background: linear-gradient(90deg, #333 25%, #444 50%, #333 75%);
+  background-size: 200% 100%;
+  animation: lca-shimmer 1.4s ease-in-out infinite;
+}
+
+/* ── Reopen FAB ── */
+
+.lca-fab {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  z-index: 2147483646;
+  width: 42px;
+  height: 42px;
+  border: none;
+  border-radius: 50%;
+  background: #ffa116;
+  color: #1e1e1e;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 20px rgba(255,161,22,0.35);
+  transition: transform 0.2s;
+  animation: lca-in 0.2s ease-out;
+}
+
+.lca-fab:hover { transform: scale(1.1); }
+
+/* ── Error ── */
+
+.lca-error {
+  font-size: 11px;
+  color: #ef4444;
+  padding: 8px 10px;
+  background: rgba(239,68,68,0.08);
+  border-radius: 6px;
+  border: 1px solid rgba(239,68,68,0.15);
+}
+
+.lca-retry {
+  border: none;
+  background: rgba(239,68,68,0.12);
+  color: #ef4444;
+  font-size: 11px;
+  font-weight: 600;
+  padding: 4px 10px;
+  border-radius: 4px;
+  cursor: pointer;
+  margin-top: 6px;
+}
+
+.lca-retry:hover { background: rgba(239,68,68,0.2); }
+
+/* ── Animations ── */
+
+@keyframes lca-in {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes lca-slide {
+  from { opacity: 0; transform: translateY(4px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes lca-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.4; }
+}
+
+@keyframes lca-shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}

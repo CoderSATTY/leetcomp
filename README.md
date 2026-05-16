@@ -1,8 +1,14 @@
+
 # LeetComp
 
 A standalone Chrome extension that acts as your personal LeetCode AI mentor. It analyzes your solutions in real-time to calculate time/space complexity and provides subtle optimization hints without spoiling the final answer.
 
 **Not a cheat tool** — hints guide you toward better solutions without revealing them.
+
+<p align="center">
+  <img src="imgs/small_promo.png" alt="LeetComp Promo" width="600"/>
+</p>
+
 
 ## Architecture
 

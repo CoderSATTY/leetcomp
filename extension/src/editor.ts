@@ -14,61 +14,38 @@ interface MonacoWindow extends Window {
 
 export async function extractCode(): Promise<string | null> {
   return new Promise((resolve) => {
-    const resEventId = "lca-code-res-" + Math.random().toString(36).substring(7);
-
     const handleResponse = (e: Event) => {
-      window.removeEventListener(resEventId, handleResponse);
+      window.removeEventListener("lca-code-response", handleResponse);
       const customEvent = e as CustomEvent;
-      resolve(customEvent.detail);
-    };
-    window.addEventListener(resEventId, handleResponse);
-
-    const script = document.createElement("script");
-    script.textContent = `
-      (function() {
-        try {
-          let code = null;
-          if (window.monaco && window.monaco.editor) {
-            const models = window.monaco.editor.getModels();
-            let bestCode = null;
-            for (let i = 0; i < models.length; i++) {
-              const val = models[i].getValue();
-              if (val.includes("class Solution") || val.includes("def ") || val.includes("public class")) {
-                bestCode = val;
-                break;
-              }
-            }
-            if (!bestCode && models.length > 0) {
-              // Fallback to the last model, which is often the user's active editor
-              bestCode = models[models.length - 1].getValue();
-            }
-            code = bestCode;
-          }
-          if (code) {
-            window.dispatchEvent(new CustomEvent("${resEventId}", { detail: code }));
-          }
-        } catch(e) {
-          // ignore
-        }
-      })();
-    `;
-    document.documentElement.appendChild(script);
-    script.remove();
-
-    setTimeout(() => {
-      window.removeEventListener(resEventId, handleResponse);
-      const viewLines = document.querySelector(".view-lines");
-      if (viewLines) {
-        const lines: string[] = [];
-        viewLines.querySelectorAll(".view-line").forEach((el) => {
-          lines.push(el.textContent || "");
-        });
-        resolve(lines.join("\\n"));
+      if (customEvent.detail) {
+        resolve(customEvent.detail);
       } else {
-        resolve(null);
+        fallbackExtraction(resolve);
       }
-    }, 500);
+    };
+    
+    window.addEventListener("lca-code-response", handleResponse);
+    window.dispatchEvent(new CustomEvent("lca-request-code"));
+
+    // Safety timeout in case the main world script fails to respond
+    setTimeout(() => {
+      window.removeEventListener("lca-code-response", handleResponse);
+      fallbackExtraction(resolve);
+    }, 800);
   });
+}
+
+function fallbackExtraction(resolve: (value: string | null) => void) {
+  const viewLines = document.querySelector(".view-lines");
+  if (viewLines) {
+    const lines: string[] = [];
+    viewLines.querySelectorAll(".view-line").forEach((el) => {
+      lines.push(el.textContent || "");
+    });
+    resolve(lines.join("\\n"));
+  } else {
+    resolve(null);
+  }
 }
 
 export function detectLanguage(): string {

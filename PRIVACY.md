@@ -38,4 +38,4 @@ LeetComp communicates exclusively with the **Groq API** (`api.groq.com`). Please
 
 ## Contact
 
-If you have questions or concerns about this privacy policy, please open an issue at the GitHub repository's [Issues tab](https://github.com/yourusername/leetcomp/issues).
+If you have questions or concerns about this privacy policy, please open an issue at the GitHub repository's [Issues tab](https://github.com/CoderSATTY/leetcomp/issues).

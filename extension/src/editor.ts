@@ -12,13 +12,15 @@ interface MonacoWindow extends Window {
   };
 }
 
-export async function extractCode(): Promise<string | null> {
+export async function extractCodeAndLanguage(): Promise<{code: string | null, language: string | null}> {
   return new Promise((resolve) => {
     const handleResponse = (e: Event) => {
       window.removeEventListener("lca-code-response", handleResponse);
       const customEvent = e as CustomEvent;
-      if (customEvent.detail) {
+      if (customEvent.detail && typeof customEvent.detail === 'object') {
         resolve(customEvent.detail);
+      } else if (typeof customEvent.detail === 'string') {
+        resolve({ code: customEvent.detail, language: null });
       } else {
         fallbackExtraction(resolve);
       }
@@ -35,16 +37,16 @@ export async function extractCode(): Promise<string | null> {
   });
 }
 
-function fallbackExtraction(resolve: (value: string | null) => void) {
+function fallbackExtraction(resolve: (value: {code: string | null, language: string | null}) => void) {
   const viewLines = document.querySelector(".view-lines");
   if (viewLines) {
     const lines: string[] = [];
     viewLines.querySelectorAll(".view-line").forEach((el) => {
       lines.push(el.textContent || "");
     });
-    resolve(lines.join("\\n"));
+    resolve({ code: lines.join("\n"), language: detectLanguage() });
   } else {
-    resolve(null);
+    resolve({ code: null, language: detectLanguage() });
   }
 }
 

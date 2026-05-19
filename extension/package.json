@@ -25,7 +25,6 @@
       "https://api.groq.com/*"
     ],
     "permissions": [
-      "activeTab",
       "storage"
     ]
   }

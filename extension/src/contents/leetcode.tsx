@@ -10,7 +10,7 @@ import type { PlasmoCSConfig } from "plasmo"
 import { useCallback, useEffect, useRef, useState } from "react"
 import cssText from "data-text:../overlay.css"
 import { analyzeCode, getApiKey, setApiKey, type AnalysisResult } from "../api"
-import { extractCode, detectLanguage, extractProblemTitle } from "../editor"
+import { extractCodeAndLanguage, detectLanguage, extractProblemTitle } from "../editor"
 
 export const config: PlasmoCSConfig = {
   matches: ["https://leetcode.com/problems/*"],
@@ -59,19 +59,20 @@ function LeetCodeAnalyzer() {
   }, [])
 
   const handleManualAnalyze = async () => {
-    const code = await extractCode()
+    const { code, language: editorLang } = await extractCodeAndLanguage()
     if (code) {
       lastCode.current = code
-      setLanguage(detectLanguage())
-      runAnalysis(code)
+      const currentLang = editorLang || detectLanguage()
+      setLanguage(currentLang)
+      runAnalysis(code, currentLang)
     }
   }
 
-  const runAnalysis = async (code: string) => {
+  const runAnalysis = async (code: string, currentLang?: string) => {
     setStatus("loading")
     setError("")
     try {
-      const lang = detectLanguage()
+      const lang = currentLang || detectLanguage()
       const title = extractProblemTitle()
       const res = await analyzeCode(code, lang, title || undefined)
       setResult(res)
@@ -88,7 +89,7 @@ function LeetCodeAnalyzer() {
   }
 
   const handleRetry = () => {
-    if (lastCode.current) runAnalysis(lastCode.current)
+    if (lastCode.current) runAnalysis(lastCode.current, language)
   }
 
   // ─── Drag handlers ───
@@ -151,7 +152,7 @@ function LeetCodeAnalyzer() {
               <polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/>
             </svg>
           </div>
-          <span className="lca-title">LC Analyzer</span>
+          <span className="lca-title">LeetComp</span>
         </div>
         <div className="lca-btns">
           <button className="lca-btn" onClick={() => setCollapsed(true)} title="Minimize">

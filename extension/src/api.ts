@@ -7,7 +7,8 @@ export interface AnalysisResult {
   hints: string[];
 }
 
-const SYSTEM_PROMPT = `You are a concise coding mentor for C++. Analyze LeetCode solutions written exclusively in C++. NEVER give full solutions.
+function getSystemPrompt(language: string) {
+  return `You are a concise coding mentor for ${language}. Analyze LeetCode solutions written exclusively in ${language}. NEVER give full solutions.
 
 Respond with ONLY a valid JSON object. No markdown, no explanation, no fences.
 
@@ -32,6 +33,7 @@ Complete and optimal:
 {"time_complexity": "O(N)", "space_complexity": "O(N)", "hints": []}
 
 RESPOND WITH ONLY THE JSON OBJECT.`;
+}
 
 export async function getApiKey(): Promise<string | null> {
   return new Promise((resolve) => {
@@ -72,7 +74,7 @@ export async function analyzeCode(
     body: JSON.stringify({
       model: GROQ_MODEL,
       messages: [
-        { role: "system", content: SYSTEM_PROMPT },
+        { role: "system", content: getSystemPrompt(language) },
         { role: "user", content: user_msg }
       ],
       temperature: 0.3,
